@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Text Rephraser AI",
+  "version": "1.0",
+  "description": "Rephrase selected text using AI",
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["modal.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Text Rephraser"
+  }
+}

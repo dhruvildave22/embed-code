@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Rephraser AI</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      margin: 0;
+      background: #f8f9fa;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .header h1 {
+      font-size: 18px;
+      margin: 0 0 5px 0;
+      color: #333;
+    }
+    
+    .header p {
+      margin: 0;
+      color: #666;
+      font-size: 12px;
+    }
+    
+    .mode-selector {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .mode-selector h3 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #333;
+    }
+    
+    .mode-tabs {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .mode-tab {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      background: #f8f9fa;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      color: #666;
+      transition: all 0.2s ease;
+      outline: none;
+      pointer-events: auto;
+    }
+    
+    .mode-tab:hover {
+      background: #e9ecef;
+      border-color: #007bff;
+    }
+    
+    .mode-tab.active {
+      background: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+    
+    .mode-content {
+      margin-bottom: 15px;
+    }
+    
+    .mode-panel {
+      display: none;
+    }
+    
+    .mode-panel.active {
+      display: block;
+    }
+    
+    .instructions {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .instructions h4 {
+      margin: 0 0 10px 0;
+      font-size: 13px;
+      color: #333;
+    }
+    
+    .direct-input-section {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .direct-input-section h4 {
+      margin: 0 0 10px 0;
+      font-size: 13px;
+      color: #333;
+    }
+    
+    #input-text, #output-text {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 12px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 60px;
+      max-height: 120px;
+    }
+    
+    #input-text:focus, #output-text:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    }
+    
+    .input-info, .result-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+    
+    .char-count-popup {
+      font-size: 10px;
+      color: #6c757d;
+    }
+    
+    .rephrase-button {
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    .rephrase-button:hover:not(:disabled) {
+      background: #218838;
+    }
+    
+    .rephrase-button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    
+    .result-section {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .result-section.hidden {
+      display: none;
+    }
+    
+    .result-section h5 {
+      margin: 0 0 8px 0;
+      font-size: 12px;
+      color: #333;
+    }
+    
+    .action-btn {
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 10px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    .copy-style {
+      background: #007bff;
+      color: white;
+    }
+    
+    .copy-style:hover {
+      background: #0056b3;
+    }
+    
+    .regenerate-style {
+      background: #17a2b8;
+      color: white;
+    }
+    
+    .regenerate-style:hover {
+      background: #138496;
+    }
+    
+    .step {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: #555;
+    }
+    
+    .step:last-child {
+      margin-bottom: 0;
+    }
+    
+    .step-number {
+      background: #007bff;
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      margin-right: 10px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: #888;
+      margin-top: 15px;
+    }
+    
+    .version {
+      background: #e9ecef;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #666;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Text Rephraser AI</h1>
+    <p>Rephrase any text using AI</p>
+  </div>
+  
+  <div class="mode-selector">
+    <h3>Choose Mode:</h3>
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="selection">📄 From Webpage</button>
+      <button class="mode-tab" data-mode="direct">✏️ Direct Input</button>
+    </div>
+  </div>
+
+  <div class="mode-content">
+    <!-- Selection Mode -->
+    <div class="mode-panel active" id="selection-mode">
+      <div class="instructions">
+        <h4>Rephrase Selected Text:</h4>
+        <div class="step">
+          <div class="step-number">1</div>
+          <div>Select any text on a webpage</div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div>Right-click to open context menu</div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div>Click "Rephrase this with AI"</div>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <div>View results and copy or replace text</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Direct Input Mode -->
+    <div class="mode-panel" id="direct-mode">
+      <div class="direct-input-section">
+        <h4>Type Text to Rephrase:</h4>
+        <textarea 
+          id="input-text" 
+          placeholder="Enter the text you want to rephrase here..."
+          rows="4"
+        ></textarea>
+        <div class="input-info">
+          <span class="char-count-popup">0 characters</span>
+          <button id="rephrase-btn" class="rephrase-button" disabled>
+            🤖 Rephrase Text
+          </button>
+        </div>
+        
+        <div id="result-section" class="result-section hidden">
+          <h5>Rephrased Result:</h5>
+          <textarea 
+            id="output-text" 
+            placeholder="Rephrased text will appear here..."
+            rows="4"
+          ></textarea>
+          <div class="result-actions">
+            <button id="copy-result-btn" class="action-btn copy-style">
+              📋 Copy Result
+            </button>
+            <button id="regenerate-result-btn" class="action-btn regenerate-style">
+              🔄 Regenerate
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="version">
+    Version 1.0
+  </div>
+  
+  <div class="footer">
+    Made with ❤️ for better writing
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
