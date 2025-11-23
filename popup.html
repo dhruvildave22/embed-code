@@ -126,6 +126,48 @@
       max-height: 120px;
     }
     
+    .style-selector {
+      margin: 10px 0;
+    }
+    
+    .style-selector label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    
+    .style-dropdown {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 11px;
+      font-family: inherit;
+      background: white;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    
+    .style-dropdown:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    }
+    
+    .style-dropdown option {
+      padding: 5px;
+      font-size: 11px;
+    }
+    
+    .style-hint {
+      font-size: 10px;
+      color: #6c757d;
+      margin-top: 3px;
+      font-style: italic;
+    }
+    
     #input-text:focus, #output-text:focus {
       outline: none;
       border-color: #007bff;
@@ -302,6 +344,24 @@
           placeholder="Enter the text you want to rephrase here..."
           rows="4"
         ></textarea>
+        
+        <div class="style-selector">
+          <label for="rephrase-style">Choose Style:</label>
+          <select id="rephrase-style" class="style-dropdown">
+            <option value="professional">🎯 Professional</option>
+            <option value="casual">😊 Casual & Friendly</option>
+            <option value="formal">🎩 Formal</option>
+            <option value="creative">🎨 Creative</option>
+            <option value="funny">😂 Funny</option>
+            <option value="concise">⚡ Concise</option>
+            <option value="detailed">📝 Detailed</option>
+            <option value="persuasive">💪 Persuasive</option>
+          </select>
+          <div class="style-hint" id="style-hint">
+            Using: 🎯 Professional style
+          </div>
+        </div>
+        
         <div class="input-info">
           <span class="char-count-popup">0 characters</span>
           <button id="rephrase-btn" class="rephrase-button" disabled>

@@ -13,12 +13,15 @@ document.addEventListener('DOMContentLoaded', function() {
   const outputText = document.getElementById('output-text');
   const copyResultBtn = document.getElementById('copy-result-btn');
   const regenerateBtn = document.getElementById('regenerate-result-btn');
+  const styleDropdown = document.getElementById('rephrase-style');
+  const styleHint = document.getElementById('style-hint');
 
   console.log('Found elements:', {
     modeTabs: modeTabs.length,
     modePanels: modePanels.length,
     inputText: !!inputText,
-    rephraseBtn: !!rephraseBtn
+    rephraseBtn: !!rephraseBtn,
+    styleDropdown: !!styleDropdown
   });
 
   // Mode tab switching with simpler approach
@@ -83,6 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (rephraseBtn) {
     rephraseBtn.addEventListener('click', async () => {
       const text = inputText.value.trim();
+      const selectedStyle = styleDropdown ? styleDropdown.value : 'professional';
+      
       if (!text) return;
 
       // Show loading state
@@ -90,11 +95,12 @@ document.addEventListener('DOMContentLoaded', function() {
       rephraseBtn.textContent = '⏳ Rephrasing...';
 
       try {
-        // Send message to background script
+        // Send message to background script with style
         const response = await new Promise((resolve) => {
           chrome.runtime.sendMessage({
             action: "callAPI",
-            text: text
+            text: text,
+            style: selectedStyle
           }, resolve);
         });
 
@@ -142,6 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (regenerateBtn && inputText && outputText) {
     regenerateBtn.addEventListener('click', async () => {
       const text = inputText.value.trim();
+      const selectedStyle = styleDropdown ? styleDropdown.value : 'professional';
+      
       if (!text) return;
 
       regenerateBtn.disabled = true;
@@ -151,7 +159,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const response = await new Promise((resolve) => {
           chrome.runtime.sendMessage({
             action: "callAPI",
-            text: text
+            text: text,
+            style: selectedStyle
           }, resolve);
         });
 
@@ -166,6 +175,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
       regenerateBtn.disabled = false;
       regenerateBtn.textContent = '🔄 Regenerate';
+    });
+  }
+
+  // Style dropdown change handler
+  if (styleDropdown && styleHint) {
+    styleDropdown.addEventListener('change', () => {
+      const selectedOption = styleDropdown.options[styleDropdown.selectedIndex];
+      styleHint.textContent = `Using: ${selectedOption.textContent} style`;
     });
   }
 });
